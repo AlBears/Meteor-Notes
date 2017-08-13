@@ -1,1 +1,1 @@
-#boilerplate meteor project
+meteor notes application
