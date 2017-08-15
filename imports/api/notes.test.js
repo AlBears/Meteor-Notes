@@ -78,5 +78,31 @@ if (Meteor.isServer) {
         ]);
       }).toThrow();
     });
+
+    it('should not update note if user was not creator', function() {
+      const title = 'This is an updated title';
+      Meteor.server.method_handlers['notes.update'].apply({
+        userId: 'testId'
+      }, [
+        noteOne._id,
+        { title }
+      ]);
+
+      const note = Notes.findOne({ _id: noteOne._id });
+
+      expect(note).toInclude(noteOne);
+    });
+
+    it('should not update note if unauthenticated', function() {
+      expect(() => {
+        Meteor.server.method_handlers['notes.update'].apply({}, [noteOne._id]);
+      }).toThrow();
+    });
+
+    it('should not update note if invalid _id', function() {
+      expect(() => {
+        Meteor.server.method_handlers['notes.update'].apply({userId: noteOne.userId});
+      }).toThrow();
+    });
   });
 }
